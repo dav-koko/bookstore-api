@@ -5,6 +5,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class FindUsersArgsDto extends FindArgsDto {
   @IsString()
   @IsOptional()
-  @ApiProperty({ required: false, description: 'Filter users by exact email match.' })
+  @ApiProperty({ required: false, description: 'Filter users by exact email match' })
   email?: string;
 }

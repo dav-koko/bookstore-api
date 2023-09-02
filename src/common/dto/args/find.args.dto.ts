@@ -27,11 +27,11 @@ export class FindArgsDto {
 
   @IsString()
   @IsOptional()
-  @ApiProperty({ required: false, description: 'The search query string.' })
+  @ApiProperty({ required: false, description: 'The search query string' })
   searchQuery?: string;
 
   @IsString()
   @IsOptional()
-  @ApiProperty({ required: false, description: 'The field to apply the search query against.' })
+  @ApiProperty({ required: false, description: 'The field to apply the search query against' })
   searchField?: string;
 }

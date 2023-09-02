@@ -79,19 +79,42 @@ export class UsersService {
             data: {
                 points: {
                     decrement: points,
+                    increment: points
                 },
             },
             select: {
                 id: true,
                 name: true,
                 email: true,
-                points: true,
+                points: true
             },
         });
         if (!user) throw new NotFoundException(E_USER_NOT_FOUND);
     
         return user;
     }
+
+    //  I could combine the deductPoints and addPoints methods, but to keep the code readable, ...
+    async addPoints(userId: number, points: number): Promise<UserResponseDto> {
+        const user = await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                points: {
+                    increment: points
+                },
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                points: true
+            },
+        });
+        if (!user) throw new NotFoundException(E_USER_NOT_FOUND);
+    
+        return user;
+    }
+    
 
     async findAll(args: FindUsersArgsDto): Promise<UsersResponseDto> {
         const {

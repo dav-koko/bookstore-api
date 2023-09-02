@@ -4,4 +4,6 @@ export const E_INCORRECT_EMAIL_OR_PASSWORD = "Email or password entered is incor
 export const E_PASSWORD_INCORRECT = "The password entered is incorrect!";
 export const E_TOO_MANY_REQUESTS = "Too many requests!";
 export const E_BOOK_NOT_FOUND = "Book not found! Please make sure the book ID entered is valid!";
+export const E_ORDER_NOT_FOUND = "Order not found! Please make sure the book ID entered is valid!";
 export const E_UNAUTHORIZED_ACCESS_TO_RESOURCE = "You are not allowed to access this resource!";
+export const E_INSUFFCIENT_FUNDS = "Insufficient points!";

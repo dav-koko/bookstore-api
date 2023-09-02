@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./node_modules/@prisma/client"  // Though this is the default path, i explicitly set it for clarity and future-proofing.
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//  The Models
+
+//  Books in the bookstore
+model Book {
+  id        Int      @id @default(autoincrement())
+  title     String
+  writer    String
+  coverImage String
+  point     Float
+  tags      Tag[] // Many-to-many relation with Tag
+  orders    Order[] // One-to-many relation with Order
+}
+
+//  Tags that books can belong to
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  books Book[]  // Many-to-many relation with Book
+}
+
+//  Users/Clients of the bookstore
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String   @unique
+  password String
+  points Float   @default(100)
+  orders Order[]  // One-to-many relation with Order
+}
+
+//  Orders of books on the bookstore
+model Order {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  bookId  Int
+  status  String   @default("pending")
+  orderDate DateTime @default(now())
+  user    User   @relation(fields: [userId], references: [id])  // Many-to-one relation with User
+  book    Book   @relation(fields: [bookId], references: [id])  // Many-to-one relation with Book
+}
+

@@ -43,76 +43,45 @@ export class UsersService {
     }
 
     async updateUser(id: number, data: UpdateUserInputDto): Promise<UserResponseDto> {
-        const user = await this.prisma.user.update({
+        const existingUser = await this.findOne(id);
+        await this.prisma.user.update({
             where: { id },
-            data: { ...data },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                points: true
-            }
+            data: { ...data }
         });
-        if (!user) throw new NotFoundException(E_USER_NOT_FOUND);
-    
-        return user;
+        return existingUser;
     }
     
     async deleteUser(id: number): Promise<UserResponseDto> {
-        const user = await this.prisma.user.delete({
-            where: { id },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                points: true,
-            }
-        });
-        if (!user) throw new NotFoundException(E_USER_NOT_FOUND);
-
-        return user;
+        const existingUser = await this.findOne(id);
+        await this.prisma.user.delete({ where: { id } });
+        return existingUser;
     }
     
-    async deductPoints(userId: number, points: number): Promise<UserResponseDto> {
-        const user = await this.prisma.user.update({
-            where: { id: userId },
+    async deductPoints(id: number, points: number): Promise<UserResponseDto> {
+        const existingUser = await this.findOne(id);
+        await this.prisma.user.update({
+            where: { id },
             data: {
                 points: {
-                    decrement: points,
-                    increment: points
+                    decrement: points
                 },
             },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                points: true
-            },
         });
-        if (!user) throw new NotFoundException(E_USER_NOT_FOUND);
-    
-        return user;
+        return existingUser;
     }
 
     //  I could combine the deductPoints and addPoints methods, but to keep the code readable, ...
-    async addPoints(userId: number, points: number): Promise<UserResponseDto> {
-        const user = await this.prisma.user.update({
-            where: { id: userId },
+    async addPoints(id: number, points: number): Promise<UserResponseDto> {
+        const existingUser = await this.findOne(id);
+        await this.prisma.user.update({
+            where: { id },
             data: {
                 points: {
                     increment: points
                 },
             },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                points: true
-            },
         });
-        if (!user) throw new NotFoundException(E_USER_NOT_FOUND);
-    
-        return user;
+        return existingUser;
     }
     
 
@@ -164,8 +133,8 @@ export class UsersService {
         };
     }
 
-    async findOne(id: number): Promise<UserResponseDto | null> {
-        return await this.prisma.user.findUnique({
+    async findOne(id: number): Promise<UserResponseDto> {
+        const user = await this.prisma.user.findUnique({
             where: { id },
             select: {
                 id: true,
@@ -174,6 +143,11 @@ export class UsersService {
                 points: true,
             }
         });
+
+        if (!user) {
+            throw new NotFoundException(E_USER_NOT_FOUND);
+        }
+        return user;
     }
 
     //full user for login - done this to keep it simply

@@ -34,6 +34,6 @@ export class AuthService {
     }
 
     async validateUser(payload: any): Promise<any> {
-        return await this.usersService.findOne(payload.id);
+        return await this.usersService.findOneForLogin(payload.email);
     }
 }

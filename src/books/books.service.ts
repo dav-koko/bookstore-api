@@ -50,62 +50,31 @@ export class BooksService {
 
     async updateBook(id: number, data: UpdateBookInputDto): Promise<BookResponseDto> {
         const { tags, ...otherData } = data;
+
+        const existingBook = await this.findOne(id);
     
         const updatedData: any = {
             ...otherData,
         };
-    
+
         // If tags are provided, we handle the relation update
         if (tags) {
             updatedData.tags = {
                 set: tags.map(tag => ({ name: tag }))
             };
         }
-    
-        const book = await this.prisma.book.update({
+        
+        await this.prisma.book.update({
             where: { id },
-            data: updatedData,
-            select: {
-                id: true,
-                title: true,
-                writer: true,
-                coverImage: true,
-                points: true,
-                tags: {
-                    select: {
-                        name: true
-                    }
-                }
-            }
+            data: updatedData
         });
-    
-        if (!book) {
-            throw new NotFoundException(E_BOOK_NOT_FOUND);
-        }
-    
-        return this._transformBookData(book);
+        return existingBook;
     }
     
     async deleteBook(id: number): Promise<BookResponseDto> {
-        const book = await this.prisma.book.delete({
-            where: { id },
-            select: {
-                id: true,
-                title: true,
-                writer: true,
-                coverImage: true,
-                points: true,
-                tags: {
-                    select: {
-                        name: true
-                    }
-                }
-            }
-        });
-
-        if (!book) throw new NotFoundException(E_BOOK_NOT_FOUND);
-
-        return this._transformBookData(book);
+        const existingBook = await this.findOne(id);
+        await this.prisma.book.delete({ where: { id } });
+        return existingBook;
     }
 
     async findAll(args: FindBooksArgsDto): Promise<BooksResponseDto> {
@@ -177,7 +146,7 @@ export class BooksService {
         };
     }
 
-    async findOne(id: number): Promise<BookResponseDto | null> {
+    async findOne(id: number): Promise<BookResponseDto> {
         const book = await this.prisma.book.findUnique({
             where: { id },
             select: {
@@ -194,12 +163,14 @@ export class BooksService {
             }
         });
 
-        if(!book) return null
+        if (!book) {
+            throw new NotFoundException(E_BOOK_NOT_FOUND);
+        }
 
         return this._transformBookData(book);
     }
 
-    private _transformBookData(book: any): BookResponseDto {
+    private _transformBookData(book): BookResponseDto {
         const transformedTags = book.tags.map(tag => tag.name);
         return {
             id: book.id,

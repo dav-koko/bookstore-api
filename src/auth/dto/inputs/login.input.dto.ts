@@ -1,12 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserInputDto {
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty({ description: 'Name of the user' })
-    readonly name: string;
-
+export class LoginInputDto {
     @IsEmail()
     @IsNotEmpty()
     @ApiProperty({ description: 'Email address of the user' })

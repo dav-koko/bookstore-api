@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./node_modules/@prisma/client"  // Though this is the default path, i explicitly set it for clarity and future-proofing.
+  output   = "../node_modules/.prisma/client"  // Though this is the default path, i explicitly set it for clarity and future-proofing.
 }
 
 datasource db {

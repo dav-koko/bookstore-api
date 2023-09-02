@@ -7,7 +7,6 @@
 
 # Prisma
 prisma/migrations
-prisma/node_modules
 
 # Logs
 logs

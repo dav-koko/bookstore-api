@@ -19,7 +19,7 @@ model Book {
   title     String
   writer    String
   coverImage String
-  point     Float
+  points     Float
   tags      Tag[] // Many-to-many relation with Tag
   orders    Order[] // One-to-many relation with Order
 }

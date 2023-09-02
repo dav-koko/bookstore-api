@@ -4,6 +4,7 @@ export enum SortOrder {
   };
 
 export enum AllowedSortFields {
-  CREATED_AT = 'createdAt',
-  NAME = 'name',
+  POINTS = 'points'
+
+  // We could have more fields here, if we ever want to expand our bookstore
 }

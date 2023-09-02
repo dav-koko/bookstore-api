@@ -1,7 +1,7 @@
 import { AllowedSortFields, SortOrder } from './../common/enums';
 import { E_USER_EMAIL_TAKEN, E_USER_NOT_FOUND } from './../common/exceptions';
 import { DEFAULT_LIMIT, INITIAL_POINTS } from './../common/constants';
-import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserInputDto } from './dto/inputs/create-user.input.dto';
 import { UserResponseDto } from './dto/responses/user.response.dto';
@@ -18,12 +18,12 @@ export class UsersService {
 
     async createUser(data: CreateUserInputDto): Promise<UserResponseDto> {
         // Check if the email already exists
-        if (await this.emailExists(data.email)) {
+        if (await this._emailExists(data.email)) {
             throw new ConflictException(E_USER_EMAIL_TAKEN);
         }
 
         // Hash the password
-        const hashedPassword = await this.hashPassword(data.password);
+        const hashedPassword = await this._hashPassword(data.password);
 
         // Create the user
         return await this.prisma.user.create({
@@ -37,7 +37,7 @@ export class UsersService {
                 id: true,
                 name: true,
                 email: true,
-                points: true,
+                points: true
             }
         });
     }
@@ -104,20 +104,12 @@ export class UsersService {
             searchField
         } = args;
     
-        // The where clause for Prisma
-        let where = {};
-        if (email) {
-            where['email'] = email;
-        }
-        
-        // It defaults to name search if searchField is not provided
-        if (searchQuery) {
-            if (searchField) {
-                where[searchField] = { contains: searchQuery };
-            } else {
-                where['name'] = { contains: searchQuery };
-            }
-        }
+        // The where clause
+        const where = {
+            ...(email && { email }),
+            ...(searchQuery && searchField && { [searchField]: { contains: searchQuery } }),
+            ...(searchQuery && !searchField && { name: { contains: searchQuery } })
+        };
     
         // Fetch the users
         const users = await this.prisma.user.findMany({
@@ -125,7 +117,7 @@ export class UsersService {
             skip: offset,
             take: limit,
             orderBy: {
-                [sortField || AllowedSortFields.CREATED_AT]: sortOrder || SortOrder.DESC
+                [sortField || AllowedSortFields.POINTS]: sortOrder || SortOrder.DESC
             },
             select: {
                 id: true,
@@ -149,9 +141,9 @@ export class UsersService {
         };
     }
 
-    async findOne(userId: number): Promise<UserResponseDto | null> {
+    async findOne(id: number): Promise<UserResponseDto | null> {
         return await this.prisma.user.findUnique({
-            where: { id: userId },
+            where: { id },
             select: {
                 id: true,
                 name: true,
@@ -164,16 +156,16 @@ export class UsersService {
     //full user for login - done this to keep it simply
     async findOneForLogin(email: string): Promise<User> {
         return await this.prisma.user.findUnique({
-            where: { email: email },
+            where: { email },
         });
     }
     
-    private async hashPassword(password: string): Promise<string> {
+    private async _hashPassword(password: string): Promise<string> {
         const hashSalt = parseInt(process.env.PASSWORD_HASH_SALT || '10', 10);
         return bcrypt.hash(password, hashSalt);
     }
 
-    private async emailExists(email: string): Promise<boolean> {
+    private async _emailExists(email: string): Promise<boolean> {
         const existingUser = await this.prisma.user.findUnique({ where: { email } });
         return !!existingUser;
     }

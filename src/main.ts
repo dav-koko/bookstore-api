@@ -16,7 +16,6 @@ async function bootstrap() {
   });
 
   //  Limits the number of requests from the same IP in a period of time.
-  //  More at: https://www.npmjs.com/package/express-rate-limit
   app.use(rateLimit({
     windowMs: 10 * 60 * 1000, // 10 minutes
     max: 100, // Limit each IP to 100 requests per `window` (here, per 10 minutes)

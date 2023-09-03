@@ -16,9 +16,7 @@ import { AuthController } from './auth.controller';
             signOptions: { expiresIn: JWT_EXPIRES_IN },
         }),
     ],
-    controllers: [
-        AuthController
-    ],
+    controllers: [AuthController],
     providers: [
         AuthService,
         JwtStrategy

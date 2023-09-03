@@ -73,9 +73,9 @@ export class OrdersService {
             offset,
             sortField,
             sortOrder,
-            userId,
             bookId,
-            status
+            status,
+            userId
         } = args;
 
         

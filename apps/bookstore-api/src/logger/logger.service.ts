@@ -28,14 +28,13 @@ export class LoggerService {
 
   async logData(data: any): Promise<void> {
     try {
-      //  Emit the data to RabbitMQ.
       await this.client.emit('log_data', data).toPromise();
-      console.log(data)
-    } catch (error) {
-        console.error('Error Details:', error);
-      // In a real-world scenario, you might want to handle this error more gracefully, 
-      // perhaps sending it to another logging service, or retrying the message send.
-      throw new InternalServerErrorException('Error sending log data to RabbitMQ', error.stack);
+    } catch (e) {
+
+      //  In a real-world scenario, we will take care of this excecption: 
+      //  we can send it to another logging service, or try to re-send it, ... 
+
+      throw new InternalServerErrorException('Error sending log data to RabbitMQ', e);
     }
   }
 }

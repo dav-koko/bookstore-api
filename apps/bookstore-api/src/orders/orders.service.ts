@@ -1,7 +1,7 @@
 import { BooksService } from './../books/books.service';
 import { UsersService } from './../users/users.service';
 import { UserResponseDto } from './../users/dto/responses/user.response.dto';
-import { Statuses } from '../common/enums';
+import { AllowedSortFields, SortOrder, Statuses } from '../common/enums';
 import { E_INSUFFCIENT_FUNDS, E_ORDER_NOT_FOUND } from '../common/exceptions';
 import { DEFAULT_LIMIT } from '../common/constants';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
@@ -67,7 +67,7 @@ export class OrdersService {
         return existingOrder;
     }
 
-    async findAll(args: FindOrdersArgsDto): Promise<OrdersResponseDto> {
+    async findAll(args: FindOrdersArgsDto, currentUser: UserResponseDto): Promise<OrdersResponseDto> {
         const {
             limit,
             offset,
@@ -90,7 +90,7 @@ export class OrdersService {
             skip: offset,
             take: limit,
             orderBy: {
-                [sortField || 'orderDate']: sortOrder || 'desc'
+                [sortField || AllowedSortFields.CREATED_AT]: sortOrder || SortOrder.DESC
             },
             include: {
                 user: true,
@@ -128,8 +128,9 @@ export class OrdersService {
                 userId: true,
                 bookId: true,
                 status: true,
-                orderDate: true,
                 user: true,
+                createdAt: true,
+                updatedAt: true,
                 book: {
                     include: {
                         tags: true
@@ -148,12 +149,15 @@ export class OrdersService {
         return {
             id: order.id,
             status: order.status,
-            orderDate: order.orderDate,
+            createdAt: order.createdAt,
+            updatedAt: order.updatedAt,
             user: {
                 id: order.user.id,
                 name: order.user.name,
                 email: order.user.email,
-                points: order.user.points
+                points: order.user.points,
+                createdAt: order.user.createdAt,
+                updatedAt: order.user.updatedAt
             },
             book: {
                 id: order.book.id,
@@ -161,6 +165,8 @@ export class OrdersService {
                 writer: order.book.writer,
                 coverImage: order.book.coverImage,
                 points: order.book.points,
+                createdAt: order.book.createdAt,
+                updatedAt: order.book.updatedAt,
                 tags: order.book.tags.map(tag => tag.name)
             }
         };

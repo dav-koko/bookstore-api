@@ -1,7 +1,7 @@
 import { AllowedSortFields, SortOrder } from './../common/enums';
-import { E_USER_EMAIL_TAKEN, E_USER_NOT_FOUND } from './../common/exceptions';
-import { DEFAULT_LIMIT, INITIAL_POINTS } from './../common/constants';
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { E_INSUFFCIENT_FUNDS, E_USER_EMAIL_TAKEN, E_USER_NOT_FOUND } from './../common/exceptions';
+import { DEFAULT_LIMIT, DEFAULT_PASSWORD_HASH_SALT, INITIAL_POINTS } from './../common/constants';
+import { Injectable, ConflictException, NotFoundException, NotAcceptableException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserInputDto } from './dto/inputs/create-user.input.dto';
 import { UserResponseDto } from './dto/responses/user.response.dto';
@@ -31,13 +31,16 @@ export class UsersService {
                 name: data.name,
                 email: data.email,
                 password: hashedPassword,
+                role: data.role,
                 points: INITIAL_POINTS  // Every new user gets 100 points.
             },
             select: {
                 id: true,
                 name: true,
                 email: true,
-                points: true
+                points: true,
+                createdAt: true,
+                updatedAt: true,
             }
         });
     }
@@ -59,6 +62,8 @@ export class UsersService {
     
     async deductPoints(id: number, points: number): Promise<UserResponseDto> {
         const existingUser = await this.findOne(id);
+        if(existingUser.points < points || existingUser.points <= 0)
+            throw new NotAcceptableException(E_INSUFFCIENT_FUNDS);
         await this.prisma.user.update({
             where: { id },
             data: {
@@ -109,13 +114,15 @@ export class UsersService {
             skip: offset,
             take: limit,
             orderBy: {
-                [sortField || AllowedSortFields.POINTS]: sortOrder || SortOrder.DESC
+                [sortField || AllowedSortFields.CREATED_AT]: sortOrder || SortOrder.DESC
             },
             select: {
                 id: true,
                 name: true,
                 email: true,
                 points: true,
+                createdAt: true,
+                updatedAt: true
             }
         });
     
@@ -141,6 +148,8 @@ export class UsersService {
                 name: true,
                 email: true,
                 points: true,
+                createdAt: true,
+                updatedAt: true,
             }
         });
 
@@ -150,15 +159,15 @@ export class UsersService {
         return user;
     }
 
-    //full user for login - done this to keep it simply
-    async findOneForLogin(email: string): Promise<User> {
+    //full user for login - done this to keep things simply
+    async findUserForAuthentication(email: string): Promise<User> {
         return await this.prisma.user.findUnique({
             where: { email },
         });
     }
     
     private async _hashPassword(password: string): Promise<string> {
-        const hashSalt = parseInt(process.env.PASSWORD_HASH_SALT || '10', 10);
+        const hashSalt = parseInt(process.env.PASSWORD_HASH_SALT || DEFAULT_PASSWORD_HASH_SALT);
         return bcrypt.hash(password, hashSalt);
     }
 

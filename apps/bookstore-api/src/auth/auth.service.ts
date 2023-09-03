@@ -15,7 +15,7 @@ export class AuthService {
     ) {}
 
     async login(loginDto: LoginInputDto): Promise<ConnectionResponseDto> {
-        const user = await this.usersService.findOneForLogin(loginDto.email);
+        const user = await this.usersService.findUserForAuthentication(loginDto.email);
         if (!user) throw new NotAcceptableException(E_INCORRECT_EMAIL_OR_PASSWORD);
 
         //  Check password
@@ -34,6 +34,6 @@ export class AuthService {
     }
 
     async validateUser(payload: any): Promise<any> {
-        return await this.usersService.findOneForLogin(payload.email);
+        return await this.usersService.findUserForAuthentication(payload.email);
     }
 }

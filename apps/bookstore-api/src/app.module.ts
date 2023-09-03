@@ -11,6 +11,7 @@ import { LoggerService } from './logger/logger.service';
 import { DEFAULT_RABBITMQ_QUEUE_NAME, DEFAULT_RABBITMQ_SERVICE_NAME, DEFAULT_RABBITMQ_URL } from './common/constants';
 import { LoggerMiddleware } from './logger/middleware/logger.middleware';
 import { LoggerModule } from './logger/logger.module';
+import { OrdersModule } from './orders/orders.module';
 
 //  In the AppModule class bellow, the LoggerMiddleware middleware is applied to all routes
 //  so that every incoming request to any route will first pass through it and
@@ -22,6 +23,7 @@ import { LoggerModule } from './logger/logger.module';
     UsersModule,
     AuthModule,
     BooksModule,
+    OrdersModule,
     LoggerModule,
 
     ConfigModule.forRoot({

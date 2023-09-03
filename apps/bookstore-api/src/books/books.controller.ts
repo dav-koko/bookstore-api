@@ -13,7 +13,7 @@ import { BooksService } from './books.service';
 export class BooksController {
     constructor(private readonly booksService: BooksService) {}
 
-    @UseGuards(UserAuthGuard) // Normally we shall privileges/roles on who can register, delete, update,...  a book
+    @UseGuards(UserAuthGuard) // TODO: Normally we shall privileges/roles on who can register, delete, update,...  a book
     @Post()
     @ApiOperation({ summary: 'Register a new book' })
     @ApiResponse({ status: HttpStatus.CREATED, description: 'Book registered successfully', type: BookResponseDto })

@@ -28,7 +28,7 @@ export class UsersController {
         return this.usersService.updateUser(id, updateUserDto);
     }
 
-    @UseGuards(UserAuthGuard)
+    @UseGuards(UserAuthGuard) // TODO: Normally we shall privileges/roles on who can register, delete, update,...  a user
     @Delete(':id')
     @ApiOperation({ summary: 'Delete a user by ID' })
     @ApiResponse({ status: HttpStatus.OK, description: 'User deleted successfully', type: UserResponseDto })

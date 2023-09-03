@@ -12,4 +12,10 @@ export class UserResponseDto {
 
   @ApiProperty({ description: 'Total points accumulated by the user' })
   points: number;
+
+  @ApiProperty({ description: 'Date when the user was created' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Date when the user was updated' })
+  updatedAt: Date;
 }

@@ -18,4 +18,10 @@ export class BookResponseDto {
 
   @ApiProperty({ type: [String], description: 'Tags to which the book belongs' })
   tags: string[];
+
+  @ApiProperty({ description: 'Date when the book was created' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Date when the book was updated' })
+  updatedAt: Date;
 }

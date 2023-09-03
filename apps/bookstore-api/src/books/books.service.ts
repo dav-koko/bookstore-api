@@ -37,6 +37,8 @@ export class BooksService {
                 writer: true,
                 coverImage: true,
                 points: true,
+                createdAt: true,
+                updatedAt: true,
                 tags: {
                     select: {
                         name: true
@@ -111,7 +113,7 @@ export class BooksService {
             skip: offset,
             take: limit,
             orderBy: {
-                [sortField || AllowedSortFields.POINTS]: sortOrder || SortOrder.DESC
+                [sortField || AllowedSortFields.CREATED_AT]: sortOrder || SortOrder.DESC
             },
             select: {
                 id: true,
@@ -119,6 +121,8 @@ export class BooksService {
                 writer: true,
                 coverImage: true,
                 points: true,
+                createdAt: true,
+                updatedAt: true,
                 tags: {
                     select: {
                         name: true
@@ -155,6 +159,8 @@ export class BooksService {
                 writer: true,
                 coverImage: true,
                 points: true,
+                createdAt: true,
+                updatedAt: true,
                 tags: {
                     select: {
                         name: true
@@ -178,7 +184,9 @@ export class BooksService {
             writer: book.writer,
             coverImage: book.coverImage,
             points: book.points,
-            tags: transformedTags
+            tags: transformedTags,
+            createdAt: book.createdAt,
+            updatedAt: book.updatedAt
         };
     }
 }

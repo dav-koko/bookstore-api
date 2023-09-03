@@ -16,5 +16,8 @@ export class OrderResponseDto {
   status: string;
 
   @ApiProperty({ description: 'Date when the order was placed' })
-  orderDate: Date;
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Date when the order was placed' })
+  updatedAt: Date;
 }

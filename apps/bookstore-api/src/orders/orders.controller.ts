@@ -42,8 +42,8 @@ export class OrdersController {
     @ApiOperation({ summary: 'Retrieve a list of orders' })
     @ApiResponse({ status: HttpStatus.OK, description: 'List of orders fetched successfully', type: OrdersResponseDto })
     @ApiQuery({ type: FindOrdersArgsDto, required: false })
-    async findAll(@Query() findOrdersArgsDto: FindOrdersArgsDto): Promise<OrdersResponseDto> {
-        return this.ordersService.findAll(findOrdersArgsDto);
+    async findAll(@Query() findOrdersArgsDto: FindOrdersArgsDto, @CurrentUser() currentUser: UserResponseDto): Promise<OrdersResponseDto> {
+        return this.ordersService.findAll(findOrdersArgsDto, currentUser);
     }
 
     @Get(':id')

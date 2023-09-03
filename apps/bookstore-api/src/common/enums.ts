@@ -4,13 +4,21 @@ export enum SortOrder {
 };
 
 export enum AllowedSortFields {
-  POINTS = 'points'
+  POINTS = 'points',
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt'
 
-  // We could have more fields here, if we ever want to expand our bookstore
+  // We could have more fields here, if we ever want to expand
 }
 
 export enum Statuses {
   PENDING = 'pending',
   COMPLETED = 'completed',
   CANCELED = 'canceled'
+};
+
+export enum Roles {
+  USER = 'user',
+  SELLER = 'seller',
+  ADMIN = 'admin'
 };

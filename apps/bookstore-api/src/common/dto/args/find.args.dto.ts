@@ -1,6 +1,6 @@
 import { IsEnum, IsInt, IsOptional, IsString, Max } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { AllowedSortFields, SortOrder } from './../../enums';
+import { AllowedSearchFields, AllowedSortFields, SortOrder } from './../../enums';
 import { DEFAULT_LIMIT, DEFAULT_OFFSET, DEFAULT_SORT_FIELD } from './../../constants';
 
 export class FindArgsDto {
@@ -30,8 +30,8 @@ export class FindArgsDto {
   @ApiProperty({ required: false, description: 'The search query string' })
   searchQuery?: string;
 
-  @IsString()
+  @IsEnum(AllowedSearchFields)
   @IsOptional()
-  @ApiProperty({ required: false, description: 'The field to apply the search query against' })
-  searchField?: string;
+  @ApiProperty({ enum: AllowedSearchFields, required: false, description: 'The field to apply the search query against' })
+  searchField?: AllowedSearchFields;
 }

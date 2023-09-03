@@ -11,6 +11,13 @@ export enum AllowedSortFields {
   // We could have more fields here, if we ever want to expand
 }
 
+export enum AllowedSearchFields {
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt'
+
+  // We can have here any common fields we want to search against (createdAt, and updatedAt are surely not the best use cases)
+}
+
 export enum Statuses {
   PENDING = 'pending',
   COMPLETED = 'completed',

@@ -79,6 +79,7 @@ export class OrdersService {
         } = args;
     
         // The where clause
+
         const where = {
             ...(userId && { userId: parseInt(userId) }),
             ...(bookId && { bookId: parseInt(bookId) }),

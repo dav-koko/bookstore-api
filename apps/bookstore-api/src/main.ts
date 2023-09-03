@@ -8,20 +8,20 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { APP_DESCRIPTION, APP_NAME, APP_VERSION } from './common/constants';
 
 async function bootstrap() {
-  //  App Instantiation
+
   const app = await NestFactory.create(AppModule);
   
   app.enableCors({
-    origin: false, // I have set origin to false to allow requests from any origin just as we test the api, this will change in production
+    origin: false, // Origin is set to false to allow requests from any origin just as we test the api, this will change in production
   });
 
-  //  Limits the number of requests from the same IP in a period of time.
+  //  Limits the number of requests from the same IP in a period of time. : 100/10min
   app.use(rateLimit({
-    windowMs: 10 * 60 * 1000, // 10 minutes
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 10 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers,
-    skipSuccessfulRequests: false, // The counting will skip all successful requests and just count the errors. Instead of removing rate-limiting, it's better to set this to true to limit the number of times a request fails. Can help prevent against brute-force attacks
+    windowMs: 10 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: false,
     message: { "message": E_TOO_MANY_REQUESTS, "statusCode": 403, }
   }));
 
@@ -40,7 +40,6 @@ async function bootstrap() {
     .setDescription(APP_DESCRIPTION)
     .setVersion(APP_VERSION)
     .addBearerAuth() // Use Bearer Authentication
-    .addBasicAuth({ type: 'apiKey', name: 'accessToken', in: 'query' }) // Use basic authentication for admin access
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

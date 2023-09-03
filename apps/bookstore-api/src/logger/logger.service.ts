@@ -30,6 +30,7 @@ export class LoggerService {
     try {
       //  Emit the data to RabbitMQ.
       await this.client.emit('log_data', data).toPromise();
+      console.log(data)
     } catch (error) {
         console.error('Error Details:', error);
       // In a real-world scenario, you might want to handle this error more gracefully, 

@@ -12,6 +12,10 @@ import { DEFAULT_RABBITMQ_QUEUE_NAME, DEFAULT_RABBITMQ_SERVICE_NAME, DEFAULT_RAB
 import { LoggerMiddleware } from './logger/middleware/logger.middleware';
 import { LoggerModule } from './logger/logger.module';
 
+//  In the AppModule class bellow, the LoggerMiddleware middleware is applied to all routes
+//  so that every incoming request to any route will first pass through it and
+//  its purpose is to log all incoming requests through RabbitMQ
+
 @Module({
   imports: [
     PrismaModule,
@@ -37,7 +41,7 @@ import { LoggerModule } from './logger/logger.module';
                     urls: [configService.get<string>('RABBITMQ_URL', DEFAULT_RABBITMQ_URL)],
                     queue: configService.get<string>('RABBITMQ_QUEUE_NAME', DEFAULT_RABBITMQ_QUEUE_NAME),
                     queueOptions: {
-                        durable: false
+                        durable: true
                     },
                 }
             }

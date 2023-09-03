@@ -73,13 +73,12 @@ export class OrdersService {
             offset,
             sortField,
             sortOrder,
-            userId,
+            userId, 
             bookId,
             status
         } = args;
     
         // The where clause
-
         const where = {
             ...(userId && { userId: parseInt(userId) }),
             ...(bookId && { bookId: parseInt(bookId) }),

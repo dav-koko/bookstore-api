@@ -92,6 +92,7 @@ export class BooksService {
         } = args;
     
         // The where clause
+        
         const where = {
             ...(writer && { writer: { contains: writer } }),
             ...(searchQuery && searchField && { [searchField]: { contains: searchQuery } }),

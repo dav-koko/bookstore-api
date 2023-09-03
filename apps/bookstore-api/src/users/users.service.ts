@@ -102,6 +102,7 @@ export class UsersService {
         } = args;
     
         // The where clause
+        
         const where = {
             ...(email && { email }),
             ...(searchQuery && searchField && { [searchField]: { contains: searchQuery } }),
@@ -109,6 +110,7 @@ export class UsersService {
         };
     
         // Fetch the users
+
         const users = await this.prisma.user.findMany({
             where,
             skip: offset,
